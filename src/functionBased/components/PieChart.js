@@ -2,8 +2,6 @@ import React from 'react'
 import { PieChart } from 'react-minimal-pie-chart'
 
 const CompletedPieChart = props => {
-  console.log('PieChart props', props.dashboardData)
-
   const tasksCompleted = props.dashboardData
     ? Number(props.dashboardData.tasksCompleted)
     : 0

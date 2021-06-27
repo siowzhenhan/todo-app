@@ -1,8 +1,6 @@
 import React from 'react'
 
 const LatestTasks = props => {
-  console.log('LatestTasks props', props.dashboardData?.latestTasks)
-
   const completedStyle = {
     fontStyle: 'italic',
     color: '#595959',

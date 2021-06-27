@@ -10,8 +10,6 @@ import CompletedPieChart from './PieChart'
 const Header = props => {
   const [todos, setTodos] = useState(props.todos)
 
-  console.log('Header props', props.dashboardData)
-
   useEffect(() => {
     setTodos(props.todos)
   }, [props.todos])

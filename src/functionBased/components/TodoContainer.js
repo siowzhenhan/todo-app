@@ -21,14 +21,12 @@ const TodoContainer = () => {
       url: `https://dev-dl.tdcx.com:3092/tasks`,
       headers: { Authorization: `Bearer ${token}` }
     }).then(fetch => {
-      console.log('get all tasks', fetch.data.tasks)
       setTodos([...fetch.data.tasks])
       getDashboardData()
     })
   }, [token])
 
   useEffect(() => {
-    console.log('Token reset')
     setToken(sessionStorage.getItem('token'))
   }, [sessionStorage.getItem('token')])
 
@@ -54,7 +52,6 @@ const TodoContainer = () => {
       url: 'https://dev-dl.tdcx.com:3092/dashboard',
       headers: { Authorization: `Bearer ${token}` }
     }).then(fetch => {
-      console.log('dashboard fetch', fetch.data)
       setDashboard(fetch.data)
     })
   }
