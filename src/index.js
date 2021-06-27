@@ -10,7 +10,7 @@ import Login from './functionBased/pages/Login'
 ReactDOM.render(
   // strict mode to check warning messages
   <React.StrictMode>
-    <Router>
+    <Router basename={process.env.PUBLIC_URL}>
       <Route path='/login' component={Login} />
       <Route path='/' component={TodoContainer} />
     </Router>

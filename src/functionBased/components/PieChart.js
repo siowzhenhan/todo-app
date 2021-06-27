@@ -6,10 +6,10 @@ const CompletedPieChart = props => {
 
   const tasksCompleted = props.dashboardData
     ? Number(props.dashboardData.tasksCompleted)
-    : null
+    : 0
   const totalTasks = props.dashboardData
     ? Number(props.dashboardData.totalTasks)
-    : null
+    : 0
 
   const dataMock = [
     { title: 'Completed', value: tasksCompleted, color: '#5285EC' },
