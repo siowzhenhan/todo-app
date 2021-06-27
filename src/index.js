@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom'
+import { BrowserRouter as Router, Route } from 'react-router-dom'
 import './functionBased/App.css'
 
 // component file
@@ -11,17 +11,8 @@ ReactDOM.render(
   // strict mode to check warning messages
   <React.StrictMode>
     <Router basename={process.env.PUBLIC_URL}>
-      <Route path='/login' component={Login}>
-        {sessionStorage.getItem('token') ? <Redirect to='/' /> : <Login />}
-      </Route>
-      <Route path='/'>
-        {console.log('sessionStorage token', sessionStorage.getItem('token'))}
-        {!sessionStorage.getItem('token') ? (
-          <Redirect to='/login' />
-        ) : (
-          <TodoContainer />
-        )}
-      </Route>
+      <Route exact path='/' component={TodoContainer} />
+      <Route exact path='/login' component={Login} />
     </Router>
   </React.StrictMode>,
   document.getElementById('root')

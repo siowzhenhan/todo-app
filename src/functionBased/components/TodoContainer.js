@@ -6,6 +6,7 @@ import Navbar from './Navbar'
 import TodosList from './TodosList'
 import Header from './Header'
 import InputTodo from './InputTodo'
+import { useHistory } from 'react-router-dom'
 
 const TodoContainer = () => {
   const [todos, setTodos] = useState([])
@@ -13,6 +14,11 @@ const TodoContainer = () => {
   const [dashboard, setDashboard] = useState()
   const [filter, setFilter] = useState()
   const [token, setToken] = useState(sessionStorage.getItem('token'))
+  const history = useHistory()
+
+  useEffect(() => {
+    if (!token) history.push('/login')
+  }, [])
 
   // get initial tasks, and set to state
   useEffect(() => {

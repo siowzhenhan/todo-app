@@ -1,8 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
 import { API } from '../../utils/axios'
 import { useHistory } from 'react-router-dom'
+import { BrowserRouter as Router, Redirect } from 'react-router-dom'
 
 const Login = () => {
   const [inputText, setInputText] = useState({
@@ -39,6 +40,7 @@ const Login = () => {
         sessionStorage.setItem('user', username)
 
         token && history.push('/')
+        console.log('pushed')
       } catch (error) {
         console.error(error)
       }
@@ -47,6 +49,10 @@ const Login = () => {
     }
   }
 
+  useEffect(() => {
+    console.log('login mounted')
+    return () => console.log('login unmount')
+  }, [])
   return (
     <div
       style={{
