@@ -1,3 +1,5 @@
+@import '~antd/dist/antd.css';
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -8,7 +10,7 @@ body {
   font-family: 'Segoe UI', Arial, sans-serif;
   line-height: 1.4;
   color: #444;
-  background: #fff;
+  background: #f4f4f6;
   height: 100vh;
 }
 
@@ -23,7 +25,7 @@ body {
 
 .inner-container {
   width: 100%;
-  padding: 8rem 10px 4rem;
+  padding: 0 10px 4rem;
 }
 
 .form-container {
@@ -36,6 +38,7 @@ body {
 }
 
 .input-text {
+  background: transparent;
   font-size: 1rem;
   font-weight: 400;
   width: 85%;
@@ -69,6 +72,13 @@ body {
   text-decoration: underline;
 }
 
+.navBar {
+  background: #fff;
+  display: flex;
+  justify-content: space-between;
+  box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.38);
+}
+
 .navBar ul {
   background: #444;
 }
@@ -78,4 +88,99 @@ body {
   text-align: right;
   padding: 10px 8px;
   line-height: 3em;
+}
+
+.header-div {
+  display: flex;
+  margin: 20px;
+}
+
+.header-card {
+  text-align: left;
+  width: 33.33%;
+  margin: 10px;
+}
+
+.header-card .inner-div {
+  margin-top: 30px;
+}
+
+.header-card h5 {
+  color: #555;
+}
+
+.latest-tasks {
+  margin-top: -10px;
+  padding-left: 15px;
+}
+
+.reversed-order {
+  transform: rotate(180deg);
+}
+
+.reversed-order li {
+  transform: rotate(180deg);
+}
+
+.login-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 265px;
+  text-align: center;
+}
+
+.login-input-text {
+  font-size: 1rem;
+  font-weight: 400;
+  width: 85%;
+  border: none;
+  background: #eef1f8;
+  margin-bottom: 15px;
+  padding-left: 10px;
+  border-radius: 10px;
+}
+
+.login-input-text::placeholder {
+  color: #000;
+}
+
+.login-input-submit {
+  background: #5285ec;
+  color: #ffffff;
+  text-transform: capitalize;
+  width: 85%;
+  font-size: 1rem;
+  font-weight: 400;
+  cursor: pointer;
+  border-radius: 10px;
+}
+
+.login-input-text,
+.login-input-submit {
+  height: 40px;
+}
+
+.search-input {
+  width: 100%;
+  font-size: 1rem;
+  font-weight: 400;
+  padding: 5px 10px;
+  border: none;
+  outline: none;
+  border-radius: calc(0.5 * 100px);
+  height: 35px;
+  box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.38);
+}
+
+@media screen and (max-width: 450px) {
+  .header-div {
+    display: block;
+  }
+
+  .header-card {
+    width: 100%;
+    margin: 10px;
+  }
 }
