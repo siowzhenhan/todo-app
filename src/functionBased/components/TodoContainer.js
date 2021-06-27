@@ -1,99 +1,121 @@
 import React, { useState, useEffect } from 'react'
-import { v4 as uuidv4 } from 'uuid'
-import { Route, Switch } from 'react-router-dom'
+import axios from 'axios'
 
-import About from '../pages/About'
-import NotMatch from '../pages/NotMatch'
+import NoTask from './NoTask'
 import Navbar from './Navbar'
 import TodosList from './TodosList'
 import Header from './Header'
 import InputTodo from './InputTodo'
+import { API } from '../../utils/axios'
 
 const TodoContainer = () => {
-  const [todos, setTodos] = useState(getInitialTodos())
+  // get initial tasks, and set to state
+  useEffect(() => {
+    async function fetchData() {
+      const fetch = await API.get('/tasks')
+      const result = fetch.data.tasks
+      setTodos([...result])
+    }
 
-  const handleChange = id => {
-    setTodos(prevState => {
-      return prevState.map(todo => {
-        if (todo.id === id) {
-          return {
-            ...todo,
-            completed: !todo.completed
-          }
-        }
-        return todo
-      })
+    try {
+      fetchData()
+      getDashboardData()
+    } catch (error) {}
+  }, [])
+
+  const [todos, setTodos] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [dashboard, setDashboard] = useState()
+  const [filter, setFilter] = useState()
+  const [token, setToken] = useState(sessionStorage.getItem('token'))
+
+  const addTodoItem = title => {
+    setLoading(true)
+    axios({
+      method: 'post',
+      url: 'https://dev-dl.tdcx.com:3092/tasks',
+      headers: { Authorization: `Bearer ${token}` },
+      data: {
+        name: title
+      }
+    }).then(({ data, status }) => {
+      setLoading(false)
+      setTodos([...todos, data.task])
     })
   }
 
-  const delTodo = id => {
-    setTodos([
-      ...todos.filter(todo => {
-        return todo.id !== id
-      })
-    ])
+  async function getDashboardData() {
+    const data = API.get('/dashboard').then(result => {
+      setDashboard(result.data)
+      console.log('Dashboard data', result.data)
+    })
   }
 
-  const addTodoItem = title => {
-    const newTodo = {
-      id: uuidv4(),
-      title: title,
-      completed: false
-    }
-    setTodos([...todos, newTodo])
-  }
-
-  const editTodo = (updatedTitle, id) => {
-    setTodos(
-      todos.map(todo => {
-        if (todo.id === id) {
-          todo.title = updatedTitle
-        }
-        return todo
-      })
-    )
-  }
-
-  // hoisted
-  function getInitialTodos() {
-    // getting stored items
-    const temp = localStorage.getItem('todos')
-    const savedTodos = JSON.parse(temp)
-    return savedTodos || []
-  }
-
-  // component did update
+  // Remove this after refactoring all API calls
   useEffect(() => {
-    // storing items
-    const temp = JSON.stringify(todos)
-    localStorage.setItem('todos', temp)
+    console.log('current todos', todos)
   }, [todos])
+
+  // delete req, filter out deleted item, then update state
+  const delTodo = id => {
+    axios({
+      method: 'delete',
+      url: `https://dev-dl.tdcx.com:3092/tasks/${id}`,
+      headers: { Authorization: `Bearer ${token}` }
+    }).then(() => {
+      const filter = todos.filter(todo => todo._id !== id)
+      setTodos(filter)
+    })
+  }
+
+  // put request, filter out edited item, then add response back to state
+  const editTodo = (object, id) => {
+    getDashboardData()
+    axios({
+      method: 'put',
+      url: `https://dev-dl.tdcx.com:3092/tasks/${id}`,
+      headers: { Authorization: `Bearer ${token}` },
+      data: { ...object }
+    }).then(({ data }) => {
+      const editedIndex = todos.findIndex(todo => todo._id === id)
+      const temp = todos
+      temp.splice(editedIndex, 1, data.task)
+      setTodos([...temp])
+    })
+  }
+
+  const handleChange = text => {
+    const filtered = todos.filter(todo => todo.name.includes(text))
+    setFilter(filtered)
+  }
 
   return (
     <>
       <Navbar />
-      <Switch>
-        <Route exact path='/'>
-          <div className='container'>
-            <div className='inner-container'>
-              <Header />
-              <InputTodo addTodoItemProps={addTodoItem} />
-              <TodosList
-                todos={todos}
-                handleChangeProps={handleChange}
-                deleteTodoProps={delTodo}
-                editTodo={editTodo}
-              />
-            </div>
-          </div>
-        </Route>
-        <Route path='/about'>
-          <About />
-        </Route>
-        <Route path='*'>
-          <NotMatch />
-        </Route>
-      </Switch>
+      <div className='container'>
+        <div
+          className='inner-container'
+          style={{ display: todos.length ? null : 'none' }}
+        >
+          <Header dashboardData={dashboard} loading={loading} todos={todos} />
+          <InputTodo addTodoItemProps={addTodoItem} />
+          <TodosList
+            todos={filter || todos}
+            handleChangeProps={handleChange}
+            deleteTodoProps={delTodo}
+            editTodo={editTodo}
+          />
+        </div>
+        <div
+          className='inner-container'
+          style={{
+            display: todos.length ? 'none' : 'flex',
+            justifyContent: 'center'
+          }}
+        >
+          <NoTask addTodoItemProps={addTodoItem} />
+        </div>
+      </div>
     </>
   )
 }

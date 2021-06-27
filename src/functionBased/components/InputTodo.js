@@ -29,7 +29,7 @@ const InputTodo = props => {
     <form className='form-container' onSubmit={handleSubmit}>
       <input
         className='input-text'
-        placeholder='Add to-do...'
+        placeholder='Add a task...'
         value={inputText.title}
         name='title'
         onChange={onChange}

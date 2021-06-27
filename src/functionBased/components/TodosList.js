@@ -1,22 +1,42 @@
-import React from 'react'
+import React, { useState } from 'react'
+import Card from '@material-ui/core/Card'
 
 import TodoItem from './TodoItem'
 
-const TodosList = props => {
+const TodosList = ({ todos, handleChangeProps, deleteTodoProps, editTodo }) => {
+  const [inputText, setInputText] = useState('')
+
+  const onChange = e => {
+    setInputText(e.target.value)
+    handleChangeProps(e.target.value)
+  }
+
   return (
-    <ul>
-      {props.todos.map(todo => {
-        return (
-          <TodoItem
-            key={todo.id}
-            todo={todo}
-            handleChangeProps={props.handleChangeProps}
-            deleteTodoProps={props.deleteTodoProps}
-            editTodo={props.editTodo}
-          />
-        )
-      })}
-    </ul>
+    <Card>
+      <div style={{ padding: 20 }}>
+        <input
+          className='search-input'
+          placeholder='Search tasks...'
+          value={inputText}
+          onChange={onChange}
+          name='search'
+        />
+
+        <ul className='reversed-order'>
+          {todos.map(todo => {
+            return (
+              <TodoItem
+                key={todo._id}
+                todo={todo}
+                handleChangeProps={handleChangeProps}
+                deleteTodoProps={deleteTodoProps}
+                editTodo={editTodo}
+              />
+            )
+          })}
+        </ul>
+      </div>
+    </Card>
   )
 }
 
