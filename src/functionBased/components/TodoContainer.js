@@ -6,31 +6,35 @@ import Navbar from './Navbar'
 import TodosList from './TodosList'
 import Header from './Header'
 import InputTodo from './InputTodo'
-import { API } from '../../utils/axios'
 
 const TodoContainer = () => {
-  // get initial tasks, and set to state
-  useEffect(() => {
-    async function fetchData() {
-      const fetch = await API.get('/tasks')
-      const result = fetch.data.tasks
-      setTodos([...result])
-    }
-
-    try {
-      fetchData()
-      getDashboardData()
-    } catch (error) {}
-  }, [])
-
   const [todos, setTodos] = useState([])
   const [loading, setLoading] = useState(false)
   const [dashboard, setDashboard] = useState()
   const [filter, setFilter] = useState()
   const [token, setToken] = useState(sessionStorage.getItem('token'))
 
+  // get initial tasks, and set to state
+  useEffect(() => {
+    axios({
+      method: 'get',
+      url: `https://dev-dl.tdcx.com:3092/tasks`,
+      headers: { Authorization: `Bearer ${token}` }
+    }).then(fetch => {
+      console.log('get all tasks', fetch.data.tasks)
+      setTodos([...fetch.data.tasks])
+      getDashboardData()
+    })
+  }, [token])
+
+  useEffect(() => {
+    console.log('Token reset')
+    setToken(sessionStorage.getItem('token'))
+  }, [sessionStorage.getItem('token')])
+
   const addTodoItem = title => {
     setLoading(true)
+    getDashboardData()
     axios({
       method: 'post',
       url: 'https://dev-dl.tdcx.com:3092/tasks',
@@ -44,10 +48,14 @@ const TodoContainer = () => {
     })
   }
 
-  async function getDashboardData() {
-    const data = API.get('/dashboard').then(result => {
-      setDashboard(result.data)
-      console.log('Dashboard data', result.data)
+  function getDashboardData() {
+    axios({
+      method: 'get',
+      url: 'https://dev-dl.tdcx.com:3092/dashboard',
+      headers: { Authorization: `Bearer ${token}` }
+    }).then(fetch => {
+      console.log('dashboard fetch', fetch.data)
+      setDashboard(fetch.data)
     })
   }
 
@@ -58,6 +66,7 @@ const TodoContainer = () => {
 
   // delete req, filter out deleted item, then update state
   const delTodo = id => {
+    getDashboardData()
     axios({
       method: 'delete',
       url: `https://dev-dl.tdcx.com:3092/tasks/${id}`,
@@ -66,6 +75,7 @@ const TodoContainer = () => {
       const filter = todos.filter(todo => todo._id !== id)
       setTodos(filter)
     })
+    getDashboardData()
   }
 
   // put request, filter out edited item, then add response back to state
@@ -82,6 +92,7 @@ const TodoContainer = () => {
       temp.splice(editedIndex, 1, data.task)
       setTodos([...temp])
     })
+    getDashboardData()
   }
 
   const handleChange = text => {
@@ -100,6 +111,7 @@ const TodoContainer = () => {
           <Header dashboardData={dashboard} loading={loading} todos={todos} />
           <InputTodo addTodoItemProps={addTodoItem} />
           <TodosList
+            loading={loading}
             todos={filter || todos}
             handleChangeProps={handleChange}
             deleteTodoProps={delTodo}

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { FaTrash, FaEdit } from 'react-icons/fa'
+import { Skeleton } from 'antd'
 import styles from './TodoItem.module.css'
 
 const TodoItem = props => {
@@ -64,33 +65,38 @@ const TodoItem = props => {
 
   return (
     <li className={styles.item}>
-      {/* Input is Controlled (only listens to the state, not DOM) */}
-      <div style={viewMode}>
-        <input
-          className={styles.checkbox}
-          type='checkbox'
-          checked={isCompleted}
-          onChange={onCheck}
-        />
-        <button onClick={() => props.deleteTodoProps(_id)}>
-          <FaTrash style={{ fontSize: 16 }} />
-        </button>
-        <button onClick={handleEditing}>
-          <FaEdit style={{ fontSize: 16 }} />
-        </button>
-        <span style={isCompleted ? completedStyle : null}>{inputText}</span>
-      </div>
-      <input
-        type='text'
-        className={styles.textInput}
-        style={editMode}
-        value={inputText}
-        onSubmit={updateValue}
-        onChange={_onChange}
-        onKeyDown={e => {
-          handleEditedDone(e)
-        }}
-      />
+      {props.loading ? (
+        <Skeleton />
+      ) : (
+        <>
+          <div style={viewMode}>
+            <input
+              className={styles.checkbox}
+              type='checkbox'
+              checked={isCompleted}
+              onChange={onCheck}
+            />
+            <button onClick={() => props.deleteTodoProps(_id)}>
+              <FaTrash style={{ fontSize: 16 }} />
+            </button>
+            <button onClick={handleEditing}>
+              <FaEdit style={{ fontSize: 16 }} />
+            </button>
+            <span style={isCompleted ? completedStyle : null}>{inputText}</span>
+          </div>
+          <input
+            type='text'
+            className={styles.textInput}
+            style={editMode}
+            value={inputText}
+            onSubmit={updateValue}
+            onChange={_onChange}
+            onKeyDown={e => {
+              handleEditedDone(e)
+            }}
+          />
+        </>
+      )}
     </li>
   )
 }

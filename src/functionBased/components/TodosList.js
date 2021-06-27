@@ -3,7 +3,13 @@ import Card from '@material-ui/core/Card'
 
 import TodoItem from './TodoItem'
 
-const TodosList = ({ todos, handleChangeProps, deleteTodoProps, editTodo }) => {
+const TodosList = ({
+  todos,
+  handleChangeProps,
+  deleteTodoProps,
+  editTodo,
+  loading
+}) => {
   const [inputText, setInputText] = useState('')
 
   const onChange = e => {
@@ -26,6 +32,7 @@ const TodosList = ({ todos, handleChangeProps, deleteTodoProps, editTodo }) => {
           {todos.map(todo => {
             return (
               <TodoItem
+                loading={loading}
                 key={todo._id}
                 todo={todo}
                 handleChangeProps={handleChangeProps}
